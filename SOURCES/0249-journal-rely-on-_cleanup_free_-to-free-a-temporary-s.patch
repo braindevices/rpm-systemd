@@ -1,4 +1,4 @@
-From c4b02a7b15c21db44542d0a136d032f8098985b8 Mon Sep 17 00:00:00 2001
+From 4d2145e3edd6ba6ac2e52a232fa5059ecdacaead Mon Sep 17 00:00:00 2001
 From: Evgeny Vereshchagin <evvers@ya.ru>
 Date: Mon, 24 Dec 2018 00:29:56 +0100
 Subject: [PATCH] journal: rely on _cleanup_free_ to free a temporary string
@@ -7,18 +7,17 @@ Subject: [PATCH] journal: rely on _cleanup_free_ to free a temporary string
 Closes https://github.com/systemd/systemd/issues/11253.
 
 (cherry picked from commit ef30f7cac18a810814ada7e6a68a31d48cc9fccd)
-(cherry picked from commit 3513426adcecc322937635c11ebb89f174f849ed)
 
-Resolves: #1767716
+Resolves: #1764560
 ---
  src/journal/journald-context.c | 7 ++-----
  1 file changed, 2 insertions(+), 5 deletions(-)
 
 diff --git a/src/journal/journald-context.c b/src/journal/journald-context.c
-index dba3525ed8..4f1278492f 100644
+index c8e97e16de..3a768094d9 100644
 --- a/src/journal/journald-context.c
 +++ b/src/journal/journald-context.c
-@@ -276,7 +276,7 @@ static int client_context_read_label(
+@@ -282,7 +282,7 @@ static int client_context_read_label(
  }
  
  static int client_context_read_cgroup(Server *s, ClientContext *c, const char *unit_id) {
@@ -27,7 +26,7 @@ index dba3525ed8..4f1278492f 100644
          int r;
  
          assert(c);
-@@ -284,7 +284,6 @@ static int client_context_read_cgroup(Server *s, ClientContext *c, const char *u
+@@ -290,7 +290,6 @@ static int client_context_read_cgroup(Server *s, ClientContext *c, const char *u
          /* Try to acquire the current cgroup path */
          r = cg_pid_get_path_shifted(c->pid, s->cgroup_root, &t);
          if (r < 0 || empty_or_root(t)) {
@@ -35,7 +34,7 @@ index dba3525ed8..4f1278492f 100644
                  /* We use the unit ID passed in as fallback if we have nothing cached yet and cg_pid_get_path_shifted()
                   * failed or process is running in a root cgroup. Zombie processes are automatically migrated to root cgroup
                   * on cgroupsv1 and we want to be able to map log messages from them too. */
-@@ -298,10 +297,8 @@ static int client_context_read_cgroup(Server *s, ClientContext *c, const char *u
+@@ -304,10 +303,8 @@ static int client_context_read_cgroup(Server *s, ClientContext *c, const char *u
          }
  
          /* Let's shortcut this if the cgroup path didn't change */

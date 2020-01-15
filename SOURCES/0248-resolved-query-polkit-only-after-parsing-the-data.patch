@@ -1,4 +1,4 @@
-From 7c9077683df0c3959b1bcae973a05e114b15a600 Mon Sep 17 00:00:00 2001
+From 7b00cae817e54ee3398ad3b42ec69a3b63676562 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Zbigniew=20J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>
 Date: Tue, 27 Aug 2019 19:28:19 +0200
 Subject: [PATCH] resolved: query polkit only after parsing the data
