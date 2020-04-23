@@ -13,7 +13,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        239
-Release:        21%{?dist}
+Release:        29%{?dist}
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        System and Service Manager
@@ -345,6 +345,53 @@ Patch0292: 0292-core-job-fix-breakage-of-ordering-dependencies-by-sy.patch
 Patch0293: 0293-debug-generator-enable-custom-systemd.debug_shell-tt.patch
 Patch0294: 0294-test-cpu-set-util-fix-comparison-for-allocation-size.patch
 Patch0295: 0295-test-cpu-set-util-fix-allocation-size-check-on-i386.patch
+Patch0296: 0296-catalog-fix-name-of-variable.patch
+Patch0297: 0297-cryptsetup-add-keyfile-timeout-to-allow-a-keydev-tim.patch
+Patch0298: 0298-cryptsetup-add-documentation-for-keyfile-timeout.patch
+Patch0299: 0299-cryptsetup-use-unabbrieviated-variable-names.patch
+Patch0300: 0300-cryptsetup-don-t-assert-on-variable-which-is-optiona.patch
+Patch0301: 0301-cryptsetup-generator-guess-whether-the-keyfile-argum.patch
+Patch0302: 0302-crypt-util-Translate-libcryptsetup-log-level-instead.patch
+Patch0303: 0303-cryptsetup-add-some-commenting-about-EAGAIN-generati.patch
+Patch0304: 0304-cryptsetup-downgrade-a-log-message-we-ignore.patch
+Patch0305: 0305-cryptsetup-rework-how-we-log-about-activation-failur.patch
+Patch0306: 0306-rules-reintroduce-60-alias-kmsg.rules.patch
+Patch0307: 0307-sd-bus-make-rqueue-wqueue-sizes-of-type-size_t.patch
+Patch0308: 0308-sd-bus-reorder-bus-ref-and-bus-message-ref-handling.patch
+Patch0309: 0309-sd-bus-make-sure-dispatch_rqueue-initializes-return-.patch
+Patch0310: 0310-sd-bus-drop-two-inappropriate-empty-lines.patch
+Patch0311: 0311-sd-bus-initialize-mutex-after-we-allocated-the-wqueu.patch
+Patch0312: 0312-sd-bus-always-go-through-sd_bus_unref-to-free-messag.patch
+Patch0313: 0313-bus-message-introduce-two-kinds-of-references-to-bus.patch
+Patch0314: 0314-sd-bus-introduce-API-for-re-enqueuing-incoming-messa.patch
+Patch0315: 0315-sd-event-add-sd_event_source_disable_unref-helper.patch
+Patch0316: 0316-polkit-when-authorizing-via-PK-let-s-re-resolve-call.patch
+Patch0317: 0317-sysctl-let-s-by-default-increase-the-numeric-PID-ran.patch
+Patch0318: 0318-journal-do-not-trigger-assertion-when-journal_file_c.patch
+Patch0319: 0319-journal-use-cleanup-attribute-at-one-more-place.patch
+Patch0320: 0320-sd-bus-use-queue-message-references-for-managing-r-w.patch
+Patch0321: 0321-pid1-make-sure-to-restore-correct-default-values-for.patch
+Patch0322: 0322-main-introduce-a-define-HIGH_RLIMIT_MEMLOCK-similar-.patch
+Patch0323: 0323-seccomp-introduce-seccomp_restrict_suid_sgid-for-blo.patch
+Patch0324: 0324-test-add-test-case-for-restrict_suid_sgid.patch
+Patch0325: 0325-core-expose-SUID-SGID-restriction-as-new-unit-settin.patch
+Patch0326: 0326-analyze-check-for-RestrictSUIDSGID-in-systemd-analyz.patch
+Patch0327: 0327-man-document-the-new-RestrictSUIDSGID-setting.patch
+Patch0328: 0328-units-turn-on-RestrictSUIDSGID-in-most-of-our-long-r.patch
+Patch0329: 0329-core-imply-NNP-and-SUID-SGID-restriction-for-Dynamic.patch
+Patch0330: 0330-cgroup-introduce-support-for-cgroup-v2-CPUSET-contro.patch
+Patch0331: 0331-pid1-fix-DefaultTasksMax-initialization.patch
+Patch0332: 0332-cgroup-make-sure-that-cpuset-is-supported-on-cgroup-.patch
+Patch0333: 0333-test-introduce-TEST-36-NUMAPOLICY.patch
+Patch0334: 0334-test-replace-tail-f-with-journal-cursor-which-should.patch
+Patch0335: 0335-test-support-MPOL_LOCAL-matching-in-unpatched-strace.patch
+Patch0336: 0336-test-make-sure-the-strace-process-is-indeed-dead.patch
+Patch0337: 0337-test-skip-the-test-on-systems-without-NUMA-support.patch
+Patch0338: 0338-test-give-strace-some-time-to-initialize.patch
+Patch0339: 0339-test-add-a-simple-sanity-check-for-systems-without-N.patch
+Patch0340: 0340-test-drop-the-missed-exit-1-expression.patch
+Patch0341: 0341-test-replace-cursor-file-with-a-plain-cursor.patch
+Patch0342: 0342-cryptsetup-Treat-key-file-errors-as-a-failed-passwor.patch
 
 
 %ifarch %{ix86} x86_64 aarch64
@@ -412,6 +459,7 @@ Provides:       /bin/systemctl
 Provides:       /sbin/shutdown
 Provides:       syslog
 Provides:       systemd-units = %{version}-%{release}
+Provides:       systemd-rpm-macros = %{version}-%{release}
 Obsoletes:      system-setup-keyboard < 0.9
 Provides:       system-setup-keyboard = 0.9
 # systemd-sysv-convert was removed in f20: https://fedorahosted.org/fpc/ticket/308
@@ -605,6 +653,10 @@ CONFIGURE_OPTS=(
         -Dtimesyncd=false
         -Ddefault-hierarchy=legacy
 )
+
+# Don't ship /var/log/README. The relationship between journal and syslog should be documented
+# in the official documentation.
+sed -ie "/subdir('doc\/var-log')/d" meson.build
 
 %meson "${CONFIGURE_OPTS[@]}"
 %meson_build
@@ -964,6 +1016,71 @@ fi
 %files tests -f .file-list-tests
 
 %changelog
+* Mon Mar 23 2020 systemd maintenance team <systemd-maint@redhat.com> - 239-29
+- cryptsetup: Treat key file errors as a failed password attempt (#1763155)
+
+* Wed Mar 11 2020 systemd maintenance team <systemd-maint@redhat.com> - 239-28
+- pid1: fix DefaultTasksMax initialization (#1809037)
+- cgroup: make sure that cpuset is supported on cgroup  v2 and disabled with v1 (#1808940)
+- test: introduce TEST-36-NUMAPOLICY (#1808940)
+- test: replace `tail -f` with journal cursor which  should be more reliable (#1808940)
+- test: support MPOL_LOCAL matching in unpatched strace  versions (#1808940)
+- test: make sure the strace process is indeed dead (#1808940)
+- test: skip the test on systems without NUMA support (#1808940)
+- test: give strace some time to initialize (#1808940)
+- test: add a simple sanity check for systems without  NUMA support (#1808940)
+- test: drop the missed || exit 1 expression (#1808940)
+- test: replace cursor file with a plain cursor (#1808940)
+
+* Fri Feb 21 2020 systemd maintenance team <systemd-maint@redhat.com> - 239-27
+- cgroup: introduce support for cgroup v2 CPUSET controller (#1724617)
+
+* Wed Feb 19 2020 systemd maintenance team <systemd-maint@redhat.com> - 239-26
+- seccomp: introduce seccomp_restrict_suid_sgid() for blocking chmod() for suid/sgid files (#1687512)
+- test: add test case for restrict_suid_sgid() (#1687512)
+- core: expose SUID/SGID restriction as new unit setting RestrictSUIDSGID= (#1687512)
+- analyze: check for RestrictSUIDSGID= in "systemd-analyze security" (#1687512)
+- man: document the new RestrictSUIDSGID= setting (#1687512)
+- units: turn on RestrictSUIDSGID= in most of our long-running daemons (#1687512)
+- core: imply NNP and SUID/SGID restriction for DynamicUser=yes service (#1687512)
+
+* Mon Feb 17 2020 systemd maintenance team <systemd-maint@redhat.com> - 239-25
+- sd-bus: use "queue" message references for managing r/w message queues in connection objects (CVE-2020-1712)
+- pid1: make sure to restore correct default values for some rlimits (#1789930)
+- main: introduce a define HIGH_RLIMIT_MEMLOCK similar to HIGH_RLIMIT_NOFILE (#1789930)
+
+* Thu Feb 13 2020 systemd maintenance team <systemd-maint@redhat.com> - 239-24
+- rules: reintroduce 60-alias-kmsg.rules (#1739353)
+- sd-bus: make rqueue/wqueue sizes of type size_t (CVE-2020-1712)
+- sd-bus: reorder bus ref and bus message ref handling (CVE-2020-1712)
+- sd-bus: make sure dispatch_rqueue() initializes return parameter on all types of success (CVE-2020-1712)
+- sd-bus: drop two inappropriate empty lines (CVE-2020-1712)
+- sd-bus: initialize mutex after we allocated the wqueue (CVE-2020-1712)
+- sd-bus: always go through sd_bus_unref() to free messages (CVE-2020-1712)
+- bus-message: introduce two kinds of references to bus messages (CVE-2020-1712)
+- sd-bus: introduce API for re-enqueuing incoming messages (CVE-2020-1712)
+- sd-event: add sd_event_source_disable_unref() helper (CVE-2020-1712)
+- polkit: when authorizing via PK let's re-resolve callback/userdata instead of caching it (CVE-2020-1712)
+- sysctl: let's by default increase the numeric PID range from 2^16 to 2^22 (#1744214)
+- journal: do not trigger assertion when journal_file_close() get NULL (#1788085)
+- journal: use cleanup attribute at one more place (#1788085)
+
+* Mon Jan 13 2020 systemd maintenance team <systemd-maint@redhat.com> - 239-23
+- catalog: fix name of variable (#1677768)
+- cryptsetup: add keyfile-timeout to allow a keydev timeout and allow to fallback to a password if it fails. (#1763155)
+- cryptsetup: add documentation for keyfile-timeout (#1763155)
+- cryptsetup: use unabbrieviated variable names (#1763155)
+- cryptsetup: don't assert on variable which is optional (#1763155)
+- cryptsetup-generator: guess whether the keyfile argument is two items or one (#1763155)
+- crypt-util: Translate libcryptsetup log level instead of using log_debug() (#1776408)
+- cryptsetup: add some commenting about EAGAIN generation (#1776408)
+- cryptsetup: downgrade a log message we ignore (#1776408)
+- cryptsetup: rework how we log about activation failures (#1776408)
+
+* Tue Dec 17 2019 systemd maintenance team <systemd-maint@redhat.com> - 239-22
+- spec: don't ship /var/log/README
+- spec: provide systemd-rpm-macros
+
 * Mon Dec 09 2019 systemd maintenance team <systemd-maint@redhat.com> - 239-21
 - test-cpu-set-util: fix comparison for allocation size (#1734787)
 - test-cpu-set-util: fix allocation size check on i386 (#1734787)
