@@ -13,7 +13,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        239
-Release:        36%{?dist}
+Release:        37%{?dist}
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        System and Service Manager
@@ -849,6 +849,9 @@ install -D -t %{buildroot}/usr/lib/systemd/ %{SOURCE3}
 # No tmp-on-tmpfs by default in RHEL. bz#876122 bz#1578772
 rm -f %{buildroot}%{_prefix}/lib/systemd/system/local-fs.target.wants/tmp.mount
 
+# bz#1844465
+rm -f %{buildroot}/etc/systemd/system/dbus-org.freedesktop.resolve1.service
+
 %find_lang %{name}
 
 # Split files in build root into rpms. See split-files.py for the
@@ -1104,6 +1107,9 @@ fi
 %files tests -f .file-list-tests
 
 %changelog
+* Wed Jul 08 2020 systemd maintenance team <systemd-maint@redhat.com> - 239-37
+- spec: don't package /etc/systemd/system/dbus-org.freedesktop.resolve1.service (#1844465)
+
 * Fri Jun 26 2020 systemd maintenance team <systemd-maint@redhat.com> - 239-36
 - core: don't consider SERVICE_SKIP_CONDITION for abnormal or failure restarts (#1737283)
 - selinux: do preprocessor check only in selinux-access.c (#1830861)
