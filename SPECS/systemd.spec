@@ -13,7 +13,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        239
-Release:        37%{?dist}
+Release:        38%{?dist}
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        System and Service Manager
@@ -859,7 +859,7 @@ rm -f %{buildroot}/etc/systemd/system/dbus-org.freedesktop.resolve1.service
 # here.
 python3 %{SOURCE2} %buildroot <<EOF
 %ghost %config(noreplace) /etc/crypttab
-%ghost /etc/udev/hwdb.bin
+%ghost %verify (not mode) /etc/udev/hwdb.bin
 /etc/inittab
 /etc/yum/protected.d/systemd.conf
 /usr/lib/systemd/purge-nobody-user
@@ -873,7 +873,7 @@ python3 %{SOURCE2} %buildroot <<EOF
 %ghost %config(noreplace) /etc/locale.conf
 %ghost %config(noreplace) %attr(0444,root,root) /etc/machine-id
 %ghost %config(noreplace) /etc/machine-info
-%config(noreplace) %{_sysconfdir}/rc.d/rc.local
+%verify(owner group) %config(noreplace) %{_sysconfdir}/rc.d/rc.local
 %{_sysconfdir}/rc.local
 %ghost %dir %attr(0700,root,root) /var/cache/private
 %ghost %dir %attr(0700,root,root) /var/lib/private
@@ -1107,6 +1107,9 @@ fi
 %files tests -f .file-list-tests
 
 %changelog
+* Tue Aug 04 2020 systemd maintenance team <systemd-maint@redhat.com> - 239-38
+- spec: fix rpm verification (#1702300)
+
 * Wed Jul 08 2020 systemd maintenance team <systemd-maint@redhat.com> - 239-37
 - spec: don't package /etc/systemd/system/dbus-org.freedesktop.resolve1.service (#1844465)
 
