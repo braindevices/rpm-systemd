@@ -13,7 +13,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        239
-Release:        39%{?dist}
+Release:        40%{?dist}
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        System and Service Manager
@@ -481,6 +481,9 @@ Patch0428: 0428-fix-mis-merge.patch
 Patch0429: 0429-tests-sleep-a-bit-and-give-kernel-time-to-perform-th.patch
 Patch0430: 0430-device-make-sure-we-emit-PropertiesChanged-signal-on.patch
 Patch0431: 0431-device-don-t-emit-PropetiesChanged-needlessly.patch
+Patch0432: 0432-units-add-generic-boot-complete.target.patch
+Patch0433: 0433-man-document-new-boot-complete.target-unit.patch
+Patch0434: 0434-core-make-sure-to-restore-the-control-command-id-too.patch
 
 
 %ifarch %{ix86} x86_64 aarch64
@@ -1109,6 +1112,11 @@ fi
 %files tests -f .file-list-tests
 
 %changelog
+* Fri Aug 28 2020 systemd maintenance team <systemd-maint@redhat.com> - 239-40
+- units: add generic boot-complete.target (#1872243)
+- man: document new "boot-complete.target" unit (#1872243)
+- core: make sure to restore the control command id, too (#1829867)
+
 * Thu Aug 06 2020 systemd maintenance team <systemd-maint@redhat.com> - 239-39
 - device: make sure we emit PropertiesChanged signal once we set sysfs (#1793533)
 - device: don't emit PropetiesChanged needlessly (#1793533)
