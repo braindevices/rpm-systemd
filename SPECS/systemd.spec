@@ -13,7 +13,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        239
-Release:        40%{?dist}
+Release:        42%{?dist}
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        System and Service Manager
@@ -484,6 +484,46 @@ Patch0431: 0431-device-don-t-emit-PropetiesChanged-needlessly.patch
 Patch0432: 0432-units-add-generic-boot-complete.target.patch
 Patch0433: 0433-man-document-new-boot-complete.target-unit.patch
 Patch0434: 0434-core-make-sure-to-restore-the-control-command-id-too.patch
+Patch0435: 0435-cgroup-freezer-action-must-be-NOP-when-cgroup-v2-fre.patch
+Patch0436: 0436-logind-don-t-print-warning-when-user-.service-templa.patch
+Patch0437: 0437-build-use-simple-project-version-in-pkgconfig-files.patch
+Patch0438: 0438-basic-virt-try-the-proc-1-sched-hack-also-for-PID1.patch
+Patch0439: 0439-seccomp-rework-how-the-S-UG-ID-filter-is-installed.patch
+Patch0440: 0440-vconsole-setup-downgrade-log-message-when-setting-fo.patch
+Patch0441: 0441-units-fix-systemd.special-man-page-reference-in-syst.patch
+Patch0442: 0442-units-drop-reference-to-sushell-man-page.patch
+Patch0443: 0443-sd-bus-break-the-loop-in-bus_ensure_running-if-the-b.patch
+Patch0444: 0444-core-add-new-API-for-enqueing-a-job-with-returning-t.patch
+Patch0445: 0445-systemctl-replace-switch-statement-by-table-of-struc.patch
+Patch0446: 0446-systemctl-reindent-table.patch
+Patch0447: 0447-systemctl-Only-wait-when-there-s-something-to-wait-f.patch
+Patch0448: 0448-systemctl-clean-up-start_unit_one-error-handling.patch
+Patch0449: 0449-systemctl-split-out-extra-args-generation-into-helpe.patch
+Patch0450: 0450-systemctl-add-new-show-transaction-switch.patch
+Patch0451: 0451-test-add-some-basic-testing-that-systemctl-start-T-d.patch
+Patch0452: 0452-man-document-the-new-systemctl-show-transaction-opti.patch
+Patch0453: 0453-socket-New-option-FlushPending-boolean-to-flush-sock.patch
+Patch0454: 0454-core-remove-support-for-API-bus-started-outside-our-.patch
+Patch0455: 0455-mount-setup-fix-segfault-in-mount_cgroup_controllers.patch
+Patch0456: 0456-dbus-execute-make-transfer-of-CPUAffinity-endian-saf.patch
+Patch0457: 0457-core-add-support-for-setting-CPUAffinity-to-special-.patch
+Patch0458: 0458-basic-user-util-always-use-base-10-for-user-group-nu.patch
+Patch0459: 0459-parse-util-sometimes-it-is-useful-to-check-if-a-stri.patch
+Patch0460: 0460-basic-parse-util-add-safe_atoux64.patch
+Patch0461: 0461-parse-util-allow-tweaking-how-to-parse-integers.patch
+Patch0462: 0462-parse-util-allow-0-as-alternative-to-0-and-0.patch
+Patch0463: 0463-parse-util-make-return-parameter-optional-in-safe_at.patch
+Patch0464: 0464-parse-util-rewrite-parse_mode-on-top-of-safe_atou_fu.patch
+Patch0465: 0465-user-util-be-stricter-in-parse_uid.patch
+Patch0466: 0466-strv-add-new-macro-STARTSWITH_SET.patch
+Patch0467: 0467-parse-util-also-parse-integers-prefixed-with-0b-and-.patch
+Patch0468: 0468-tests-beef-up-integer-parsing-tests.patch
+Patch0469: 0469-shared-user-util-add-compat-forms-of-user-name-check.patch
+Patch0470: 0470-shared-user-util-emit-a-warning-on-names-with-dots.patch
+Patch0471: 0471-user-util-Allow-names-starting-with-a-digit.patch
+Patch0472: 0472-shared-user-util-allow-usernames-with-dots-in-specif.patch
+Patch0473: 0473-user-util-switch-order-of-checks-in-valid_user_group.patch
+Patch0474: 0474-user-util-rework-how-we-validate-user-names.patch
 
 
 %ifarch %{ix86} x86_64 aarch64
@@ -1112,6 +1152,50 @@ fi
 %files tests -f .file-list-tests
 
 %changelog
+* Tue Nov 03 2020 systemd maintenance team <systemd-maint@redhat.com> - 239-42
+- logind: don't print warning when user@.service template is masked (#1880270)
+- build: use simple project version in pkgconfig files (#1862714)
+- basic/virt: try the /proc/1/sched hack also for PID1 (#1868877)
+- seccomp: rework how the S[UG]ID filter is installed (#1860374)
+- vconsole-setup: downgrade log message when setting font fails on dummy console (#1889996)
+- units: fix systemd.special man page reference in system-update-cleanup.service (#1871827)
+- units: drop reference to sushell man page (#1871827)
+- sd-bus: break the loop in bus_ensure_running() if the bus is not connecting (#1885553)
+- core: add new API for enqueing a job with returning the transaction data (#846319)
+- systemctl: replace switch statement by table of structures (#846319)
+- systemctl: reindent table (#846319)
+- systemctl: Only wait when there's something to wait for. (#846319)
+- systemctl: clean up start_unit_one() error handling (#846319)
+- systemctl: split out extra args generation into helper function of its own (#846319)
+- systemctl: add new --show-transaction switch (#846319)
+- test: add some basic testing that "systemctl start -T" does something (#846319)
+- man: document the new systemctl --show-transaction option (#846319)
+- socket: New option 'FlushPending' (boolean) to flush socket before entering listening state (#1870638)
+- core: remove support for API bus "started outside our own logic" (#1764282)
+- mount-setup: fix segfault in mount_cgroup_controllers when using gcc9 compiler (#1868877)
+- dbus-execute: make transfer of CPUAffinity endian safe (#12711) (#1740657)
+- core: add support for setting CPUAffinity= to special "numa" value (#1740657)
+- basic/user-util: always use base 10 for user/group numbers (#1848373)
+- parse-util: sometimes it is useful to check if a string is a valid integer, but not actually parse it (#1848373)
+- basic/parse-util: add safe_atoux64() (#1848373)
+- parse-util: allow tweaking how to parse integers (#1848373)
+- parse-util: allow '-0' as alternative to '0' and '+0' (#1848373)
+- parse-util: make return parameter optional in safe_atou16_full() (#1848373)
+- parse-util: rewrite parse_mode() on top of safe_atou_full() (#1848373)
+- user-util: be stricter in parse_uid() (#1848373)
+- strv: add new macro STARTSWITH_SET() (#1848373)
+- parse-util: also parse integers prefixed with 0b and 0o (#1848373)
+- tests: beef up integer parsing tests (#1848373)
+- shared/user-util: add compat forms of user name checking functions (#1848373)
+- shared/user-util: emit a warning on names with dots (#1848373)
+- user-util: Allow names starting with a digit (#1848373)
+- shared/user-util: allow usernames with dots in specific fields (#1848373)
+- user-util: switch order of checks in valid_user_group_name_or_id_full() (#1848373)
+- user-util: rework how we validate user names (#1848373)
+
+* Wed Oct 07 2020 systemd maintenance team <systemd-maint@redhat.com> - 239-41
+- cgroup: freezer action must be NOP when cgroup v2 freezer is not available (#1868831)
+
 * Fri Aug 28 2020 systemd maintenance team <systemd-maint@redhat.com> - 239-40
 - units: add generic boot-complete.target (#1872243)
 - man: document new "boot-complete.target" unit (#1872243)
