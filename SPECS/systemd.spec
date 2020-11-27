@@ -13,7 +13,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        239
-Release:        42%{?dist}
+Release:        43%{?dist}
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        System and Service Manager
@@ -524,6 +524,27 @@ Patch0471: 0471-user-util-Allow-names-starting-with-a-digit.patch
 Patch0472: 0472-shared-user-util-allow-usernames-with-dots-in-specif.patch
 Patch0473: 0473-user-util-switch-order-of-checks-in-valid_user_group.patch
 Patch0474: 0474-user-util-rework-how-we-validate-user-names.patch
+Patch0475: 0475-man-mention-System-Administrator-s-Guide-in-systemct.patch
+Patch0476: 0476-udev-introduce-udev-net_id-naming-schemes.patch
+Patch0477: 0477-meson-make-net.naming-scheme-default-configurable.patch
+Patch0478: 0478-man-describe-naming-schemes-in-a-new-man-page.patch
+Patch0479: 0479-udev-net_id-parse-_SUN-ACPI-index-as-a-signed-intege.patch
+Patch0480: 0480-udev-net_id-don-t-generate-slot-based-names-if-multi.patch
+Patch0481: 0481-fix-typo-in-ProtectSystem-option.patch
+Patch0482: 0482-remove-references-of-non-existent-man-pages.patch
+Patch0483: 0483-log-Prefer-logging-to-CLI-unless-JOURNAL_STREAM-is-s.patch
+Patch0484: 0484-locale-util-add-new-helper-locale_is_installed.patch
+Patch0485: 0485-test-add-test-case-for-locale_is_installed.patch
+Patch0486: 0486-tree-wide-port-various-bits-over-to-locale_is_instal.patch
+Patch0487: 0487-install-allow-instantiated-units-to-be-enabled-via-p.patch
+Patch0488: 0488-install-small-refactor-to-combine-two-function-calls.patch
+Patch0489: 0489-test-fix-a-memleak.patch
+Patch0490: 0490-docs-Add-syntax-for-templated-units-to-systemd.prese.patch
+Patch0491: 0491-shared-install-fix-preset-operations-for-non-service.patch
+Patch0492: 0492-introduce-setsockopt_int-helper.patch
+Patch0493: 0493-socket-util-add-generic-socket_pass_pktinfo-helper.patch
+Patch0494: 0494-core-add-new-PassPacketInfo-socket-unit-property.patch
+Patch0495: 0495-resolved-tweak-cmsg-calculation.patch
 
 
 %ifarch %{ix86} x86_64 aarch64
@@ -1152,6 +1173,29 @@ fi
 %files tests -f .file-list-tests
 
 %changelog
+* Thu Nov 26 2020 systemd maintenance team <systemd-maint@redhat.com> - 239-43
+- man: mention System Administrator's Guide in systemctl manpage (#1623116)
+- udev: introduce udev net_id "naming schemes" (#1827462)
+- meson: make net.naming-scheme= default configurable (#1827462)
+- man: describe naming schemes in a new man page (#1827462)
+- udev/net_id: parse _SUN ACPI index as a signed integer (#1827462)
+- udev/net_id: don't generate slot based names if multiple devices might claim the same slot (#1827462)
+- fix typo in ProtectSystem= option (#1871139)
+- remove references of non-existent man pages (#1876807)
+- log: Prefer logging to CLI unless JOURNAL_STREAM is set (#1865840)
+- locale-util: add new helper locale_is_installed() (#1755287)
+- test: add test case for locale_is_installed() (#1755287)
+- tree-wide: port various bits over to locale_is_installed() (#1755287)
+- install: allow instantiated units to be enabled via presets (#1812972)
+- install: small refactor to combine two function calls into one function (#1812972)
+- test: fix a memleak (#1812972)
+- docs: Add syntax for templated units to systemd.preset man page (#1812972)
+- shared/install: fix preset operations for non-service instantiated units (#1812972)
+- introduce setsockopt_int() helper (#1887181)
+- socket-util: add generic socket_pass_pktinfo() helper (#1887181)
+- core: add new PassPacketInfo= socket unit property (#1887181)
+- resolved: tweak cmsg calculation (#1887181)
+
 * Tue Nov 03 2020 systemd maintenance team <systemd-maint@redhat.com> - 239-42
 - logind: don't print warning when user@.service template is masked (#1880270)
 - build: use simple project version in pkgconfig files (#1862714)
