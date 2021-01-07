@@ -1,0 +1,45 @@
+From f3a9f2c3525a6451b852325b9fdb6bb89e1a75d2 Mon Sep 17 00:00:00 2001
+From: "Ling Wang@g731gw" <LingWangNeuralEng@gmail.com>
+Date: Wed, 23 Dec 2020 21:58:32 +0100
+Subject: [PATCH] do not assert in test test_mnt_id()
+
+---
+ src/test/test-mount-util.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
+
+diff --git a/src/test/test-mount-util.c b/src/test/test-mount-util.c
+index c10e1681fb..9f48605307 100644
+--- a/src/test/test-mount-util.c
++++ b/src/test/test-mount-util.c
+@@ -69,12 +69,21 @@ static void test_mnt_id(void) {
+ 
+                 log_debug("mnt id of %s is %i\n", p, mnt_id2);
+ 
+-                if (mnt_id == mnt_id2)
++                if (mnt_id == mnt_id2) {
++                        log_debug("mnt ids of %s is %i\n", p, mnt_id);
+                         continue;
+-
+-                /* The ids don't match? If so, then there are two mounts on the same path, let's check if that's really
+-                 * the case */
+-                assert_se(path_equal_ptr(hashmap_get(h, INT_TO_PTR(mnt_id2)), p));
++                } else
++                        log_debug("mnt ids of %s are %i, %i\n", p, mnt_id, mnt_id2);
++
++                /* The ids don't match? If so, then there are two mounts on the same path, let's check if
++                 * that's really the case */
++                char *t = hashmap_get(h, INT_TO_PTR(mnt_id2));
++                log_debug("Path for mnt id %i from /proc/self/mountinfo is %s\n", mnt_id2, t);
++
++                if (!path_equal(p, t))
++                        /* Apparent kernel bug in /proc/self/fdinfo */
++                        log_warning("Bad mount id given for %s: %d, should be %d",
++                                    p, mnt_id2, mnt_id);
+         }
+ 
+         hashmap_free_free(h);
+
+base-commit: de7436b02badc82200dc127ff190b8155769b8e7
+-- 
+2.25.1
+

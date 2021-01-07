@@ -13,7 +13,7 @@
 Name:           systemd
 Url:            http://www.freedesktop.org/wiki/Software/systemd
 Version:        239
-Release:        43%{?dist}
+Release:        44%{?dist}
 # For a breakdown of the licensing, see README
 License:        LGPLv2+ and MIT and GPLv2+
 Summary:        System and Service Manager
@@ -545,7 +545,7 @@ Patch0492: 0492-introduce-setsockopt_int-helper.patch
 Patch0493: 0493-socket-util-add-generic-socket_pass_pktinfo-helper.patch
 Patch0494: 0494-core-add-new-PassPacketInfo-socket-unit-property.patch
 Patch0495: 0495-resolved-tweak-cmsg-calculation.patch
-
+Patch0496: 0001-do-not-assert-in-test-test_mnt_id.patch
 
 %ifarch %{ix86} x86_64 aarch64
 %global have_gnu_efi 1
@@ -1173,6 +1173,9 @@ fi
 %files tests -f .file-list-tests
 
 %changelog
+* Thu Jan 07 2021 Ling Wang @ VMCentOS01 <ling@game-on.eu> - 239-44
+- fix test mount-util by patch
+
 * Thu Nov 26 2020 systemd maintenance team <systemd-maint@redhat.com> - 239-43
 - man: mention System Administrator's Guide in systemctl manpage (#1623116)
 - udev: introduce udev net_id "naming schemes" (#1827462)
